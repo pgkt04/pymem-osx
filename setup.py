@@ -9,7 +9,7 @@ with open(directory / 'README.md', encoding='utf-8') as f:
   long_description = f.read()
 
 setup(name="pymem-osx",
-      version = "1.0.0",
+      version = "1.0.1",
       description="A MacOS python library for reading and writing memory of other processes",
       author="qtkite",
       license="MIT",
@@ -22,4 +22,8 @@ setup(name="pymem-osx",
         "Operating System :: MacOS",
         "Programming Language :: Python :: 3",
       ],
+      url="https://github.com/qtkite/pymem-osx",
+      project_urls={
+        "Source Code": "https://github.com/qtkite/pymem-osx"
+      },
       include_package_data=True)

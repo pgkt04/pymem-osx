@@ -9,5 +9,9 @@ cd pymem-osx
 python3 -m pip install -e .
 ```
 
+Alternatively you can do:
+```
+pip install pymem-osx
+```
 # Note
 When running your python script, it must be elevated (in sudo mode) for the api calls to work.
