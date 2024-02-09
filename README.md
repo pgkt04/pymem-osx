@@ -6,6 +6,7 @@ A python library for MacOS, providing the base functions required for memory man
 - Base address searcher
 - Modules name and address dumper
 - Live in-memory modules macho-o address parser/dumper (x64 implementation).
+  - Useful for finding address of different sections (__DATA, __TEXT) and even their respective segments.
 
 # Installation
 You can install pymem from source.
