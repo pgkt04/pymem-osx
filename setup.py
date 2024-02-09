@@ -17,5 +17,4 @@ setup(name="PyMem",
       long_description_content_type='text/markdown',
       packages=["pymem"],
       python_requires='>=3.8',
-      include_package_data=True
-)
+      include_package_data=True)
