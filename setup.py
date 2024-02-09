@@ -9,7 +9,7 @@ with open(directory / 'README.md', encoding='utf-8') as f:
   long_description = f.read()
 
 setup(name="pymem-osx",
-      version = "1.0.2",
+      version = "1.0.3",
       description="A MacOS python library for reading and writing memory of other processes",
       author="qtkite",
       license="MIT",
