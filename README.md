@@ -5,7 +5,7 @@ A python library for MacOS, providing the base functions required for memory man
 - Memory read/write helpers.
 - Base address searcher
 - Modules name and address dumper
-- Live in-memory modules macho-o address parser/dumper (x64 implementation).
+- Live in-memory modules macho-o address parser/dumper (64-bit implementation).
   - Useful for finding address of different sections (__DATA, __TEXT) and even their respective segments.
 
 # Installation
