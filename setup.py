@@ -17,4 +17,9 @@ setup(name="PyMem",
       long_description_content_type='text/markdown',
       packages=["pymem"],
       python_requires='>=3.8',
+      classifiers=[
+        "License :: OSI Approved :: MIT License",
+        "Operating System :: MacOS",
+        "Programming Language :: Python :: 3",
+      ],
       include_package_data=True)
