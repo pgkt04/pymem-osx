@@ -1,8 +1,9 @@
 import ctypes, os
-from ctypes import byref, sizeof, addressof
+from ctypes import byref, sizeof, addressof, util
 from typing import List, Tuple
-from resources import vmtypes as vt
+from pymem.resources import vmtypes as vt
 from pymem.utils import align_address
+from pymem.macho import Segment, Section, Module
 
 libproc = ctypes.CDLL(ctypes.util.find_library("libproc"))
 assert libproc, "Failed to load libproc"
@@ -88,10 +89,7 @@ def get_protection(task: int, addr: ctypes.c_uint64) -> int:
     return -1
   return info.protection
 
-# this is the size on m1 arm 14.2.1 (23C71), may differ on different arch
-SIZE_DYLD_ALL_IMAGE_INFOS = 0x170
-
-def get_modules(task: int) -> List[Tuple[str, ctypes.c_uint64]]:
+def get_modules(task: int) -> List[Module]:
   # read task_dyld_info
   dyld_info = vt.task_dyld_info()
   count = ctypes.c_uint32(vt.TASK_DYLD_INFO_COUNT)
@@ -99,6 +97,8 @@ def get_modules(task: int) -> List[Tuple[str, ctypes.c_uint64]]:
   if kern.value != 0:
     print(f"task_info failed with error {kern}")
     return []
+
+  SIZE_DYLD_ALL_IMAGE_INFOS = sizeof(vt.dyld_all_image_infos)
 
   # read dyld_all_image_infos
   buffer = ctypes.create_string_buffer(SIZE_DYLD_ALL_IMAGE_INFOS)
@@ -122,20 +122,20 @@ def get_modules(task: int) -> List[Tuple[str, ctypes.c_uint64]]:
     info: vt.dyld_image_info = image_info_array[i]
     buffer = ctypes.create_string_buffer(1024)
     read(task, ctypes.c_uint64(info.imageFilePath), buffer, len(buffer))
-    modules.append((buffer.value.decode(), ctypes.c_uint64(info.imageLoadAddress)))
+    modules.append(Module(buffer.value.decode(), info.imageLoadAddress))
 
   # also add dyld itself
   all_image_infos.dyldPath
   buffer = ctypes.create_string_buffer(1024)
   res = read(task, ctypes.c_uint64(all_image_infos.dyldPath), buffer, len(buffer))
   assert res > 0, f"Failed to read dyld path"
-  modules.append((buffer.value.decode(), ctypes.c_uint64(all_image_infos.dyldImageLoadAddress)))
+  modules.append(Module(buffer.value.decode(), all_image_infos.dyldImageLoadAddress))
   return modules
 
 # currently only parses mach64 since we only interested in macos m1
-# TODO: move the return a class for readability
-def parse_macho(task: int, addr: ctypes.c_uint64) -> List[Tuple[str, ctypes.c_uint64, List[Tuple[str, ctypes.c_uint64]]]]:
+def parse_macho(task: int, base_addr: int) -> List[Section]:
   ret = []
+  addr = ctypes.c_uint64(base_addr)
   header_size = sizeof(vt.mach_header_64)
   buffer = ctypes.create_string_buffer(header_size)
   result = read(task, addr, buffer, header_size)
@@ -157,11 +157,11 @@ def parse_macho(task: int, addr: ctypes.c_uint64) -> List[Tuple[str, ctypes.c_ui
           segment_64.vmaddr = addr.value
         else:
           segment_64.vmaddr += addr_rebase
-        temp = []
+        segments = []
         for i in range(segment_64.nsects): # parse sections
           section: vt.section_64 = ctypes.cast(command_addr + sizeof(vt.segment_command_64) + (i * sizeof(vt.section_64)), ctypes.POINTER(vt.section_64)).contents
           section.addr += addr_rebase
-          temp.append((section.sectname.decode(), section.addr))
-        ret.append((segment_64.segname.decode(), segment_64.vmaddr, temp))
+          segments.append(Segment(section.sectname.decode(), section.addr))
+        ret.append(Section(segment_64.segname.decode(), segment_64.vmaddr, segments))
       offset += load_cmd.cmdsize # moves to next load command
   return ret

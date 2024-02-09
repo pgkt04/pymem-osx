@@ -20,7 +20,6 @@ class VmRegionBasicInfo64(ctypes.Structure):
   behavior: ctypes.c_uint32
   user_wired_count: ctypes.c_ushort
 
-
 class task_dyld_info(ctypes.Structure):
   _fields_ = [
     ("all_image_info_addr", ctypes.c_uint64),

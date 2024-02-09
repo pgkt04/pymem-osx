@@ -8,3 +8,6 @@ git clone https://github.com/qtkite/pymem-osx.git
 cd pymem-osx
 python3 -m pip install -e .
 ```
+
+# Note
+When running your python script, it must be elevated (in sudo mode) for the api calls to work.
