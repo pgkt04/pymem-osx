@@ -4,9 +4,9 @@ from sys import platform
 from typing import List
 from pymem.macho import Module, Section
 
-class PyMem:
+class Pymem:
   def __init__(self, process_name: str) -> None:
-    assert platform == "darwin", f"PyMem only supports MacOS (64-bit ARM), not {platform}"
+    assert platform == "darwin", f"pymem-osx only supports MacOS (64-bit ARM), not {platform}"
     self.process_name = process_name
     self.pid = process.get_pid_by_name(process_name)
     assert self.pid != -1, "Failed to find process"

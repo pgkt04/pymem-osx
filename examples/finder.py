@@ -1,7 +1,7 @@
 # this example lists the modules of finder, and reads the magic header
-from pymem import PyMem
+from pymem import Pymem
 
-finder = PyMem("Finder")
+finder = Pymem("Finder")
 modules = finder.get_modules(True)
 for i in modules:
   print(i.get_name())
