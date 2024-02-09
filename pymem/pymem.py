@@ -1,13 +1,11 @@
-import ctypes
+import ctypes, struct, sys
 import pymem.process as process
-from sys import platform
 from typing import List
 from pymem.macho import Module
-import struct
 
 class Pymem:
   def __init__(self, process_name: str) -> None:
-    assert platform == "darwin", f"pymem-osx only supports MacOS (64-bit ARM), not {platform}"
+    assert sys.platform == "darwin", f"pymem-osx only supports MacOS (64-bit ARM), not {sys.platform}"
     self.process_name = process_name
     self.pid = process.get_pid_by_name(process_name)
     assert self.pid != -1, "Failed to find process"
