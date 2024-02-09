@@ -2,7 +2,8 @@ import ctypes
 import pymem.process as process
 from sys import platform
 from typing import List
-from pymem.macho import Module, Section
+from pymem.macho import Module
+import struct
 
 class Pymem:
   def __init__(self, process_name: str) -> None:
@@ -20,9 +21,9 @@ class Pymem:
 
   def read_int32(self, address: int) -> int: return int.from_bytes(self.read_buffer(address, 4), "little")
   def read_int64(self, address: int) -> int: return int.from_bytes(self.read_buffer(address, 8), "little")
-  def read_float(self, address: int) -> float: return ctypes.c_float.from_buffer_copy(self.read_buffer(address, 4)).value
-  def read_double(self, address: int) -> float: return ctypes.c_double.from_buffer_copy(self.read_buffer(address, 8)).value
-  def read_bool(self, address: int) -> bool: return bool.from_bytes(self.read_buffer(address, 1), "little")
+  def read_float(self, address: int) -> float: return struct.unpack('f', self.read_buffer(address, 4))[0]
+  def read_double(self, address: int) -> float: return struct.unpack('d', self.read_buffer(address, 8))[0]
+  def read_bool(self, address: int) -> bool: return struct.unpack('?', self.read_buffer(address, 1))[0]
 
   def write_bytes(self, address: int, buffer: bytes) -> None:
     buffer = ctypes.create_string_buffer(buffer)
@@ -30,9 +31,10 @@ class Pymem:
 
   def write_int32(self, address: int, value: int) -> None: self.write_bytes(address, value.to_bytes(4, "little"))
   def write_int64(self, address: int, value: int) -> None: self.write_bytes(address, value.to_bytes(8, "little"))
-  def write_float(self, address: int, value: float) -> None: self.write_bytes(address, ctypes.c_float(value).from_buffer(ctypes.create_string_buffer(4)).raw)
-  def write_double(self, address: int, value: float) -> None: self.write_bytes(address, ctypes.c_double(value).from_buffer(ctypes.create_string_buffer(8)).raw)
-  def write_bool(self, address: int, value: bool) -> None: self.write_bytes(address, int(value).to_bytes(1, "little"))
+  def write_float(self, address: int, value: float) -> None: self.write_bytes(address, struct.pack('f', value))
+  def write_double(self, address: int, value: float) -> None: self.write_bytes(address, struct.pack('d', value))
+  def write_bool(self, address: int, value: bool) -> None: self.write_bytes(address, struct.pack('?', value))
+
   def get_base_address(self) -> int: return process.get_base_address(self.task).value
 
   def get_modules(self, extended: bool = False) -> List[Module]:
