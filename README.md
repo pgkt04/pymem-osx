@@ -1,6 +1,12 @@
 # pymem-osx
 A python library for MacOS, providing the base functions required for memory manipulation (read/write).
 
+# Features
+- Memory read/write helpers.
+- Base address searcher
+- Modules name and address dumper
+- Live in-memory modules macho-o address parser/dumper (x64 implementation).
+
 # Installation
 You can install pymem from source.
 ```
