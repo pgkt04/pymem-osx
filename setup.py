@@ -8,7 +8,7 @@ directory = Path(__file__).resolve().parent
 with open(directory / 'README.md', encoding='utf-8') as f:
   long_description = f.read()
 
-setup(name="PyMem",
+setup(name="pymem-osx",
       version = "1.0.0",
       description="A MacOS python library for reading and writing memory of other processes",
       author="qtkite",
