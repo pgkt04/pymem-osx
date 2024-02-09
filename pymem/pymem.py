@@ -11,17 +11,17 @@ class Pymem:
     assert self.pid != -1, "Failed to find process"
     self.task = process.get_task(self.pid)
 
-  def read_buffer(self, address: int, size: int) -> bytes:
+  def read_bytes(self, address: int, size: int) -> bytes:
     buffer = ctypes.create_string_buffer(size)
     bytes_read = process.read(self.task, ctypes.c_uint64(address), buffer, size)
     assert bytes_read == size, f"Failed to read buffer, only read {bytes_read} bytes out of {size} bytes"
     return buffer.raw
 
-  def read_int32(self, address: int) -> int: return int.from_bytes(self.read_buffer(address, 4), "little")
-  def read_int64(self, address: int) -> int: return int.from_bytes(self.read_buffer(address, 8), "little")
-  def read_float(self, address: int) -> float: return struct.unpack('f', self.read_buffer(address, 4))[0]
-  def read_double(self, address: int) -> float: return struct.unpack('d', self.read_buffer(address, 8))[0]
-  def read_bool(self, address: int) -> bool: return struct.unpack('?', self.read_buffer(address, 1))[0]
+  def read_int32(self, address: int) -> int: return int.from_bytes(self.read_bytes(address, 4), "little")
+  def read_int64(self, address: int) -> int: return int.from_bytes(self.read_bytes(address, 8), "little")
+  def read_float(self, address: int) -> float: return struct.unpack('f', self.read_bytes(address, 4))[0]
+  def read_double(self, address: int) -> float: return struct.unpack('d', self.read_bytes(address, 8))[0]
+  def read_bool(self, address: int) -> bool: return struct.unpack('?', self.read_bytes(address, 1))[0]
 
   def write_bytes(self, address: int, buffer: bytes) -> None:
     buffer = ctypes.create_string_buffer(buffer)
