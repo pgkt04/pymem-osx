@@ -1,5 +1,5 @@
 # pymem-osx
-A python library for MacOS, providing the base functions required for memory manipulation (read/write).
+A python library for MacOS, providing the base functions required for memory manipulation.
 
 # Features
 - Memory read/write helpers.
