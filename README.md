@@ -22,7 +22,3 @@ pip install pymem-osx
 ```
 # Note
 When running your python script, it must be elevated (in sudo mode) for the api calls to work.
-
-# Donate
-Buy me a coffee to support some of the work I put out  
-[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/B0B65F2OS)
